@@ -23,7 +23,7 @@ public class WordNet
         fillSynsets();  // O(N)
         graph = new Digraph(this.synsets.size());
         makeGraph();    // O(N)
-        // Check of cycles
+        // Check for cycles
         if(hasCycle())
         {
             throw new IllegalArgumentException("Digraph has a cycle");
