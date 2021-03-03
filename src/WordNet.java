@@ -1,13 +1,13 @@
 import edu.princeton.cs.algs4.Digraph;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class WordNet
 {
-    private HashMap<Integer, String> synsets = new HashMap<Integer, String>();
+    private HashMap<Integer, String> synsets = new HashMap<>();
+    private HashMap<String, ArrayList<Integer>> synsets_unique = new HashMap<>();
     private String fileName_syn;
     private String fileName_hyp;
     private int size;
@@ -20,10 +20,10 @@ public class WordNet
         if (isNull(synsets) || isNull(hypernyms)) throw new IllegalArgumentException();
         fileName_syn = synsets;
         fileName_hyp = hypernyms;
-        fillSynsets();
+        fillSynsets();  // O(N)
         size = this.synsets.size();
         graph = new Digraph(size);
-        makeGraph();
+        makeGraph();    // O(N)
     }
     /*
     // returns all WordNet nouns
@@ -45,16 +45,18 @@ public class WordNet
     {}
     */
 
-    // fill the this.synsets list from the input file
+    // fill the this.synsets hashmap from the input file
     private void fillSynsets()
     {
         try(BufferedReader br = new BufferedReader(new FileReader(this.fileName_syn)))
         {
             for(String line; (line = br.readLine()) != null; )
             {
-                List<String> words = new ArrayList<String>();
                 String[] tokens = line.split(",");
-                this.synsets.put(Integer.parseInt(tokens[0]), tokens[1]);
+                int syn_id = Integer.parseInt(tokens[0]);
+                this.synsets.put(syn_id, tokens[1]);
+                String[] nouns = tokens[1].split(" ");
+                mapSynsets(syn_id, nouns);
             }
         } catch (Exception e)
         {
@@ -62,28 +64,31 @@ public class WordNet
         }
     }
 
-    /* Fill this.hypernyms such that hypernyms[i] = [int1, int2,...]
-    where i is the synset ID and int1, int2 are the corresponding hypernyms' synset IDs */
-    /* NOT NEEDED ATM
-    private void fillHypernyms()
+    /**
+     * Helper function that maps the each synset nouns entry to a hashmap in which
+     * nouns are keys and values are arrays filled with their respective synset ids
+     * Function modifies the synsets_unique class attribute
+     * @param syn_id line id that identifies the synset
+     * @param nouns array of the synset nouns at a given synset id
+     */
+    private void mapSynsets(int syn_id, String[] nouns)
     {
-        try(BufferedReader br = new BufferedReader(new FileReader(this.fileName_hyp)))
+        // Elegant and scalable
+        for (String noun : nouns)
         {
-            for(String line; (line = br.readLine()) != null; )
-            {
-                List<Integer> ids = new ArrayList<Integer>();
-                String[] tokens = line.split(",");
-                for (int i = 1; i < tokens.length; i++)
-                {
-                    ids.add(Integer.parseInt(tokens[i]));
-                }
-                this.hypernyms.add(ids);
-            }
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+            ArrayList<Integer> myList = new ArrayList<>();
+            /* similar to https://stackoverflow.com/a/4158002
+             *For key=noun get the corresponding list of synset ids in the hashmap
+             *If the key=noun does not exist return the empty myList, and if it exists
+              return the existing list
+             */
+            ArrayList<Integer> ids = synsets_unique.getOrDefault(noun, myList);
+            // Add the new synset id to the empty list or to the already existing list
+            ids.add(syn_id);
+            synsets_unique.put(noun, ids);
         }
-    } */
+    }
+
     /*
     Read the hypernyms file and create the Digraph
      */
