@@ -1,6 +1,5 @@
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.DirectedCycle;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.BufferedReader;
