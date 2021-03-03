@@ -1,4 +1,6 @@
 import edu.princeton.cs.algs4.Digraph;
+import edu.princeton.cs.algs4.DirectedCycle;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.BufferedReader;
@@ -22,6 +24,12 @@ public class WordNet
         fillSynsets();  // O(N)
         graph = new Digraph(this.synsets.size());
         makeGraph();    // O(N)
+        // Check of cycles
+        if(hasCycle())
+        {
+            throw new IllegalArgumentException("Digraph has a cycle");
+        }
+
     }
 
     // returns all WordNet nouns
@@ -40,7 +48,13 @@ public class WordNet
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB)
-    {return 0;}
+    {
+        if (isNull(nounA) || isNull(nounB) || isNoun(nounA) || isNoun(nounB))
+        {
+            throw new IllegalArgumentException("Not a WordNet noun or is Null");
+        }
+        return 0;
+    }
 
     /*
     a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
@@ -113,6 +127,14 @@ public class WordNet
         {
             e.printStackTrace();
         }
+    }
+    /*
+    Checks if a digraph has a cycle
+     */
+    private boolean hasCycle()
+    {
+        DirectedCycle dc_graph = new DirectedCycle(this.graph);
+        return dc_graph.hasCycle();
     }
 
     // check if object is null
