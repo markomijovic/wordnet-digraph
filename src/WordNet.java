@@ -6,12 +6,11 @@ import java.io.FileReader;
 
 public class WordNet
 {
-    private HashMap<Integer, String> synsets = new HashMap<>();
-    private HashMap<String, ArrayList<Integer>> synsets_unique = new HashMap<>();
-    private String fileName_syn;
-    private String fileName_hyp;
-    private int size;
-    private Digraph graph;
+    private final HashMap<Integer, String> synsets = new HashMap<>();
+    private final HashMap<String, ArrayList<Integer>> synsets_unique = new HashMap<>();
+    private final String fileName_syn;
+    private final String fileName_hyp;
+    private final Digraph graph;
 
     // constructor takes the name of the two input files
     public WordNet(String synsets, String hypernyms)
@@ -21,26 +20,31 @@ public class WordNet
         fileName_syn = synsets;
         fileName_hyp = hypernyms;
         fillSynsets();  // O(N)
-        size = this.synsets.size();
-        graph = new Digraph(size);
+        graph = new Digraph(this.synsets.size());
         makeGraph();    // O(N)
     }
-    /*
+
     // returns all WordNet nouns
     public Iterable<String> nouns()
-    {}
+    { return synsets_unique.keySet(); }
 
     // is the word a WordNet noun?
     public boolean isNoun(String word)
-    {}
+    {
+        if (isNull(word))
+        {
+            throw new IllegalArgumentException();
+        }
+        return synsets_unique.containsKey(word);
+    }
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB)
-    {}
+    {return 0;}
 
     /*
-    // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
-    // in a shortest ancestral path (defined below)
+    a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
+    in a shortest ancestral path (defined below)
     public String sap(String nounA, String nounB)
     {}
     */
@@ -76,13 +80,12 @@ public class WordNet
         // Elegant and scalable
         for (String noun : nouns)
         {
-            ArrayList<Integer> myList = new ArrayList<>();
             /* similar to https://stackoverflow.com/a/4158002
              *For key=noun get the corresponding list of synset ids in the hashmap
              *If the key=noun does not exist return the empty myList, and if it exists
               return the existing list
              */
-            ArrayList<Integer> ids = synsets_unique.getOrDefault(noun, myList);
+            ArrayList<Integer> ids = synsets_unique.getOrDefault(noun, new ArrayList<>());
             // Add the new synset id to the empty list or to the already existing list
             ids.add(syn_id);
             synsets_unique.put(noun, ids);
