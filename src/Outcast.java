@@ -3,7 +3,6 @@ public class Outcast
     private final WordNet wn;
     public Outcast(WordNet wordnet)         // constructor takes a WordNet object
     {
-        if (WordNet.isNull(wordnet)) throw new IllegalArgumentException();
         wn = wordnet;
     }
     public String outcast(String[] nouns)   // given an array of WordNet nouns, return an outcast

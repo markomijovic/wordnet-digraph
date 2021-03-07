@@ -1,5 +1,7 @@
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.DirectedCycle;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.BufferedReader;
@@ -78,9 +80,9 @@ public class WordNet
     // fill the this.synsets hashmap from the input file
     private void fillSynsets()
     {
-        try(BufferedReader br = new BufferedReader(new FileReader(this.fileName_syn)))
+        try (BufferedReader br = new BufferedReader(new FileReader(this.fileName_syn)))
         {
-            for(String line; (line = br.readLine()) != null; )
+            for (String line; (line = br.readLine()) != null;)
             {
                 String[] tokens = line.split(",");
                 int syn_id = Integer.parseInt(tokens[0]);
@@ -88,9 +90,9 @@ public class WordNet
                 String[] nouns = tokens[1].split(" ");
                 mapSynsets(syn_id, nouns);
             }
-        } catch (Exception e)
+        } catch (IllegalArgumentException | IOException e)
         {
-            e.printStackTrace();
+            System.out.println("IllegalArgumentException");
         }
     }
 
@@ -123,9 +125,9 @@ public class WordNet
      */
     private void makeGraph()
     {
-        try(BufferedReader br = new BufferedReader(new FileReader(this.fileName_hyp)))
+        try (BufferedReader br = new BufferedReader(new FileReader(this.fileName_hyp)))
         {
-            for(String line; (line = br.readLine()) != null; )
+            for (String line; (line = br.readLine()) != null;)
             {
                 String[] ids = line.split(",");
                 int v = Integer.parseInt(ids[0]);
@@ -135,9 +137,9 @@ public class WordNet
                     graph.addEdge(v, w);
                 }
             }
-        } catch (Exception e)
+        } catch (IllegalArgumentException | IOException e)
         {
-            e.printStackTrace();
+            System.out.println("IllegalArgumentException");
         }
     }
     /*
@@ -150,7 +152,7 @@ public class WordNet
     }
 
     // check if object is null
-    public static boolean isNull(Object obj)
+    private static boolean isNull(Object obj)
     { return obj == null; }
 
     // do unit testing of this class
