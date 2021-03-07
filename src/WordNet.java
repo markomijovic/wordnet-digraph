@@ -1,5 +1,7 @@
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.DirectedCycle;
+import edu.princeton.cs.algs4.In;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.BufferedReader;
@@ -12,6 +14,7 @@ public class WordNet
     private final String fileName_syn;
     private final String fileName_hyp;
     private final Digraph graph;
+    private final SAP sap;
 
     // constructor takes the name of the two input files
     public WordNet(String synsets, String hypernyms)
@@ -28,6 +31,7 @@ public class WordNet
         {
             throw new IllegalArgumentException("Digraph has a cycle");
         }
+        sap = new SAP(graph);
 
     }
 
@@ -48,19 +52,30 @@ public class WordNet
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB)
     {
-        if (isNull(nounA) || isNull(nounB) || isNoun(nounA) || isNoun(nounB))
+        if (!isNoun(nounA) || !isNoun(nounB))
         {
             throw new IllegalArgumentException("Not a WordNet noun or is Null");
         }
-        return 0;
+        ArrayList<Integer> ids_A = synsets_unique.get(nounA);
+        ArrayList<Integer> ids_B = synsets_unique.get(nounB);
+        return sap.length(ids_A, ids_B);
     }
 
     /*
     a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
     in a shortest ancestral path (defined below)
-    public String sap(String nounA, String nounB)
-    {}
     */
+    public String sap(String nounA, String nounB)
+    {
+        if (!isNoun(nounA) || !isNoun(nounB))
+        {
+            throw new IllegalArgumentException("Not a WordNet noun or is Null");
+        }
+        ArrayList<Integer> ids_A = synsets_unique.get(nounA);
+        ArrayList<Integer> ids_B = synsets_unique.get(nounB);
+        int id = sap.ancestor(ids_A, ids_B);
+        return synsets.get(id);
+    }
 
     // fill the this.synsets hashmap from the input file
     private void fillSynsets()
