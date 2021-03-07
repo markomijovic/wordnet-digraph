@@ -1,7 +1,5 @@
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.DirectedCycle;
-import edu.princeton.cs.algs4.In;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.BufferedReader;
@@ -158,7 +156,5 @@ public class WordNet
     // do unit testing of this class
     public static void main(String[] args)
     {
-        WordNet myWN = new WordNet("C:\\Users\\Marko\\Desktop\\School\\CS - Personal\\Coursera - Princeton - Algorithms2\\Week1\\WordNet\\data\\synsets.txt",
-                "C:\\Users\\Marko\\Desktop\\School\\CS - Personal\\Coursera - Princeton - Algorithms2\\Week1\\WordNet\\data\\hypernyms.txt");
     }
 }
